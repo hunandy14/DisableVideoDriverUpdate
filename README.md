@@ -3,4 +3,7 @@
 
 使用方法
 1. 按下 Win+X 再按 A 打開終端機
-2. 輸入 `irm bit.ly/3fqFUMs|iex` 然後按下 Enter 即可
+2. 輸入 `irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate` 然後按下 Enter 即可
+
+復原方法
+1. 輸入 `irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Recovery` 然後按下 Enter 即可
