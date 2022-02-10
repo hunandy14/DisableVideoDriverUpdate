@@ -38,6 +38,10 @@ function DisableVideoDriverUpdate {
         if (Test-Path "Registry::$regPath2") { reg delete $regPath2 /f }
         reg add $regPath2 /f /t "REG_SZ" /v $($i + 1) /d $DeviceID
     }
+    
+    # 導向說明網站
+    $env:Path = $env:Path+";C:\Program Files (x86)\Microsoft\Edge\Application"
+    msedge.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
 }
 # DisableVideoDriverUpdate -Filter:"NVIDIA|AMD|VMware|Intel"
 # DisableVideoDriverUpdate -Force
