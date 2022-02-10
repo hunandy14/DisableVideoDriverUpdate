@@ -1,20 +1,46 @@
 function DisableVideoDriverUpdate {
     param(
-        [switch] $Recovery
+        [string] $Filter,
+        [switch] $Recovery,
+        [switch] $Force
     )
-    $Device = ((Get-WmiObject -Class CIM_PCVideoController)|Select-Object Name, PNPDeviceID)# -match("NVIDIA|AMD")
-    if ($Device -eq "") { Write-Host "ERROR:: No (NVIDIA or AMD) Device" -F:yellow; return }
-    $DeviceID = "PCI\"+($Device.PNPDeviceID.Split('\'))[1]
+    # 復原預設值
+    if ($Recovery) {
+        if (Test-Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall") {
+            reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall" /f
+        } return
+    }
     
+    # 獲取顯示卡
+    $Devices = @()
+    $Devices += ((Get-WmiObject -Class CIM_PCVideoController))
+    if ($Filter) { $Devices = $Devices -match ($Filter) }
+    if ($Devices.Length -eq 0) { Write-Host "沒有找到設備" -ForegroundColor:Yellow; return }
+
+    # 確認
+    for ($i = 0; $i -lt $Devices.Count; $i++) {
+        Write-Host " " [$($i+1)] $Devices[$i].Name
+    }
+    Write-Host "即將禁用上述設備的自動更新" -ForegroundColor:Yellow;
+    if (!$Force) {
+        $response = Read-Host " 沒有異議，請輸入Y (Y/N) ";
+        if ($response -ne "Y" -or $response -ne "Y") { Write-Host "使用者中斷" -ForegroundColor:Red; return; }
+    }
+    
+    # 寫入登錄檔
     $regPath1 = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions"
     $regPath2 = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceIDs"
-    
-    if ($Recovery) {
-        reg delete $regPath2
-    } else {
+    for ($i = 0; $i -lt $Devices.Count; $i++) {
+        $DeviceID = "PCI\" + ($Devices[$i].PNPDeviceID.Split('\'))[1]
+        # Write-Host "[$($i+1)] $DeviceID"
         reg add $regPath1 /f /t "REG_DWORD" /v "DenyDeviceIDs" /d "1"
         reg add $regPath1 /f /t "REG_DWORD" /v "DenyDeviceIDsRetroactive" /d "0"
-        reg add $regPath2 /f /t "REG_SZ" /v "1" /d $DeviceID
+        if (Test-Path "Registry::$regPath2") { reg delete $regPath2 /f }
+        reg add $regPath2 /f /t "REG_SZ" /v $($i + 1) /d $DeviceID
     }
 }
+# DisableVideoDriverUpdate -Filter:"NVIDIA|AMD|VMware|Intel"
+# DisableVideoDriverUpdate -Force
 # DisableVideoDriverUpdate
+# DisableVideoDriverUpdate -Recovery
+# DisableVideoDriverUpdate -Filter:"AMD" -Force
