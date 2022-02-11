@@ -5,7 +5,7 @@
 
 ```
 # 禁用AMD設備更新
-irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Name:"AMD"
+irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Filter:"AMD"
 
 # 恢復AMD設備更新
 irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Recovery
