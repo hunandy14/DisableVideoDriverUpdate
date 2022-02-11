@@ -15,14 +15,17 @@ function DisableVideoDriverUpdate {
     if ($Name) { $Filter = $Name }
     
     # 獲取顯示卡
-    $Devices = @()
-    $Devices += ((Get-WmiObject -Class CIM_PCVideoController))
+    $DevicesAll = @()
+    $DevicesAll += ((Get-WmiObject -Class CIM_PCVideoController))
     # 過濾特定廠牌 
+    $Devices = @()
     if ($Filter) {
-        $Devices = $Devices|Where-Object{$_.Description -match $Filter}
-        # $Devices |Select-Object  Description,PNPDeviceID
+        $Devices += $DevicesAll|Where-Object{$_.Name -match $Filter}
+        # $Devices |Select-Object  Name,PNPDeviceID
+    } else {
+        $Devices = $DevicesAll
     }
-    if ($Devices.Length -eq 0) { Write-Host "沒有找 $Filter 到設備" -ForegroundColor:Yellow; return }
+    if ($Devices.Length -eq 0) { Write-Host "沒有找到$($Filter)設備" -ForegroundColor:Yellow; return }
     # 確認
     for ($i = 0; $i -lt $Devices.Count; $i++) {
         Write-Host " " [$($i+1)] $Devices[$i].Name
@@ -37,20 +40,19 @@ function DisableVideoDriverUpdate {
     $regPath1 = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions"
     $regPath2 = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceIDs"
     for ($i = 0; $i -lt $Devices.Count; $i++) {
-        $DeviceID = "PCI\" + ($Devices[$i].PNPDeviceID.Split('\'))[1]
+        $DeviceID   = "PCI\" + ($Devices[$i].PNPDeviceID.Split('\'))[1]
+        $DeviceName = $Devices[$i].Name
         reg add $regPath1 /f /t "REG_DWORD" /v "DenyDeviceIDs" /d "1"
         reg add $regPath1 /f /t "REG_DWORD" /v "DenyDeviceIDsRetroactive" /d "0"
         if (Test-Path "Registry::$regPath2") { reg delete $regPath2 /f }
         reg add $regPath2 /f /t "REG_SZ" /v $($i + 1) /d $DeviceID
-        Write-Host "[$($i+1)] $DeviceID -- 已禁用"
+        Write-Host "[$($i+1)] $DeviceID(" -NoNewline
+        Write-Host $DeviceName -ForegroundColor:Yellow -NoNewline
+        Write-Host ")::" -NoNewline
+        Write-Host "已禁用" -ForegroundColor:Red
     }
     
     # 導向說明網站
-    $env:Path = $env:Path+";C:\Program Files (x86)\Microsoft\Edge\Application"
-    msedge.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
-}
-# DisableVideoDriverUpdate -Filter:"NVIDIA|AMD|VMware|Intel"
-# DisableVideoDriverUpdate -Force
-# DisableVideoDriverUpdate
-# DisableVideoDriverUpdate -Recovery
-# DisableVideoDriverUpdate -Filter:"AMD" -Force
+    # $env:Path = $env:Path+";C:\Program Files (x86)\Microsoft\Edge\Application"
+    # msedge.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
+} # DisableVideoDriverUpdate -Filter:"VMware"
