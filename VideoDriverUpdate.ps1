@@ -1,6 +1,7 @@
 function DisableVideoDriverUpdate {
     param(
         [string] $Filter,
+        [string] $Name,
         [switch] $Recovery,
         [switch] $Force
     )
@@ -10,6 +11,8 @@ function DisableVideoDriverUpdate {
             reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall" /f
         } return
     }
+    # 廢棄參數轉換
+    if ($Name) { $Filter = $Name }
     
     # 獲取顯示卡
     $Devices = @()
