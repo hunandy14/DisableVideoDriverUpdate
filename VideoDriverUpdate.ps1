@@ -17,9 +17,12 @@ function DisableVideoDriverUpdate {
     # 獲取顯示卡
     $Devices = @()
     $Devices += ((Get-WmiObject -Class CIM_PCVideoController))
-    if ($Filter) { $Devices = $Devices -match ($Filter) }
-    if ($Devices.Length -eq 0) { Write-Host "沒有找到設備" -ForegroundColor:Yellow; return }
-
+    # 過濾特定廠牌 
+    if ($Filter) {
+        $Devices = $Devices|Where-Object{$_.Description -match $Filter}
+        # $Devices |Select-Object  Description,PNPDeviceID
+    }
+    if ($Devices.Length -eq 0) { Write-Host "沒有找 $Filter 到設備" -ForegroundColor:Yellow; return }
     # 確認
     for ($i = 0; $i -lt $Devices.Count; $i++) {
         Write-Host " " [$($i+1)] $Devices[$i].Name
