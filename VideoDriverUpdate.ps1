@@ -35,11 +35,11 @@ function DisableVideoDriverUpdate {
     $regPath2 = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceIDs"
     for ($i = 0; $i -lt $Devices.Count; $i++) {
         $DeviceID = "PCI\" + ($Devices[$i].PNPDeviceID.Split('\'))[1]
-        Write-Host "[$($i+1)] $DeviceID -- 已禁用"
         reg add $regPath1 /f /t "REG_DWORD" /v "DenyDeviceIDs" /d "1"
         reg add $regPath1 /f /t "REG_DWORD" /v "DenyDeviceIDsRetroactive" /d "0"
         if (Test-Path "Registry::$regPath2") { reg delete $regPath2 /f }
         reg add $regPath2 /f /t "REG_SZ" /v $($i + 1) /d $DeviceID
+        Write-Host "[$($i+1)] $DeviceID -- 已禁用"
     }
     
     # 導向說明網站

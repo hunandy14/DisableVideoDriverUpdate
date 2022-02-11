@@ -4,10 +4,10 @@
 按下 Win+X 再按 A 打開終端機
 
 ```
-# 禁用AMD設備更新
-irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Filter:"AMD"
+# 禁用顯示卡設備更新
+irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate
 
-# 恢復AMD設備更新
+# 恢復設備更新
 irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Recovery
 ```
 
