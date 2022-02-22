@@ -56,3 +56,7 @@ function DisableVideoDriverUpdate {
     # $env:Path = $env:Path+";C:\Program Files (x86)\Microsoft\Edge\Application"
     # msedge.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
 } # DisableVideoDriverUpdate -Filter:"VMware"
+
+function DisAMD {
+    DisableVideoDriverUpdate -Filter:Radeon
+} # DisAMD
