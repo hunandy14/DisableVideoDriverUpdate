@@ -3,14 +3,27 @@ function DisableVideoDriverUpdate {
         [string] $Filter,
         [string] $Name,
         [switch] $Recovery,
-        [switch] $Force
+        [switch] $Force,
+        [switch] $Info
     )
+    # 查看顯卡設備名稱
+    if ($Info) {
+        Write-Host "已安裝的顯示卡設備" -ForegroundColor:Yellow;
+        $Devices += @(Get-WmiObject -Class CIM_PCVideoController)
+        for ($i = 0; $i -lt $Devices.Count; $i++) {
+            Write-Host "  " [$($i+1)] $Devices[$i].Name
+        } Write-Host ""; return
+    }
+    
+    
+    
     # 復原預設值
     if ($Recovery) {
         if (Test-Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall") {
             reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall" /f
         } return
     }
+    
     # 廢棄參數轉換
     if ($Name) { $Filter = $Name }
     
