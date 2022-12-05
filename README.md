@@ -1,7 +1,7 @@
 禁用 NVIDIA or AMD 顯示卡驅動的自動更新
 ===
 
-![](img/run.png)
+![](img/Cover.png)
 
 ## 指令說明
 
