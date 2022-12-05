@@ -16,7 +16,8 @@ function DisableVideoDriverUpdate {
         $Devices += @(Get-WmiObject -Class CIM_PCVideoController)
         for ($i = 0; $i -lt $Devices.Count; $i++) {
             Write-Host "  " [$($i+1)] $Devices[$i].Name
-        } Write-Host ""; return
+        } Write-Host ""
+        return
     }
     # 復原預設值
     if ($Recovery) {
@@ -66,7 +67,7 @@ function DisableVideoDriverUpdate {
     }
     
     # 導向說明網站
-    Write-Host "關於注意事項, 3秒後導向作者說明網站..."; Start-Sleep 3
+    Write-Host "關於注意事項, 3秒後導向作者說明網站..."; Start-Sleep 5
     explorer.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
 } # DisableVideoDriverUpdate -Filter:"VMware"
 
