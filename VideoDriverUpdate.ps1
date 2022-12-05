@@ -28,7 +28,9 @@ function DisableVideoDriverUpdate {
         }
         if (Test-Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall") {
             reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall" /f
-        } return
+        } 
+        Write-Host "`n復原完畢, 已經所有恢復設備的自動更新" -ForegroundColor:Yellow
+        return
     }
     
     # 獲取顯示卡

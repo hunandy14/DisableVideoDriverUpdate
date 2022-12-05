@@ -33,12 +33,12 @@ irm bit.ly/DisAMDUpdate|iex; DisableVideoDriverUpdate -Info
 
 禁用
 ```ps1
-powershell -nop -c "irm bit.ly/DisAMDUpdate|iex; DisAMD"
+powershell -nop -noe -c "irm bit.ly/DisAMDUpdate|iex; DisAMD"
 ```
 
 復原
 ```ps1
-powershell -nop -c "irm bit.ly/DisAMDUpdate|iex; RcvAMD"
+powershell -nop -noe -c "irm bit.ly/DisAMDUpdate|iex; RcvAMD"
 ```
 
 
