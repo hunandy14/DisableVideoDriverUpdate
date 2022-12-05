@@ -1,10 +1,14 @@
+# 禁用顯示卡自動更新驅動
 function DisableVideoDriverUpdate {
     param(
+        [Parameter(ParameterSetName = "A")]
         [string] $Filter,
-        [string] $Name,
+        [Parameter(ParameterSetName = "B")]
         [switch] $Recovery,
-        [switch] $Force,
-        [switch] $Info
+        [Parameter(ParameterSetName = "C")]
+        [switch] $Info,
+        [Parameter(ParameterSetName = "")]
+        [switch] $Force
     )
     # 查看顯卡設備名稱
     if ($Info) {
@@ -14,18 +18,17 @@ function DisableVideoDriverUpdate {
             Write-Host "  " [$($i+1)] $Devices[$i].Name
         } Write-Host ""; return
     }
-    
-    
-    
     # 復原預設值
     if ($Recovery) {
+        Write-Host "即將恢復所有設備的自動更新" -ForegroundColor:Yellow;
+        if (!$Force) {
+            $response = Read-Host " 沒有異議, 請輸入Y (Y/N) ";
+            if ($response -ne "Y" -or $response -ne "Y") { Write-Host "使用者中斷" -ForegroundColor:Red; return; }
+        }
         if (Test-Path "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall") {
             reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall" /f
         } return
     }
-    
-    # 廢棄參數轉換
-    if ($Name) { $Filter = $Name }
     
     # 獲取顯示卡
     $DevicesAll = @()
@@ -35,17 +38,14 @@ function DisableVideoDriverUpdate {
     if ($Filter) {
         $Devices += $DevicesAll|Where-Object{$_.Name -match $Filter}
         # $Devices |Select-Object  Name,PNPDeviceID
-    } else {
-        $Devices = $DevicesAll
-    }
+    } else { $Devices = $DevicesAll }
     if ($Devices.Length -eq 0) { Write-Host "沒有找到$($Filter)設備" -ForegroundColor:Yellow; return }
-    # 確認
-    for ($i = 0; $i -lt $Devices.Count; $i++) {
-        Write-Host " " [$($i+1)] $Devices[$i].Name
-    }
+    
+    # 確認禁用設備
+    for ($i = 0; $i -lt $Devices.Count; $i++) { Write-Host " " [$($i+1)] $Devices[$i].Name }
     Write-Host "即將禁用上述設備的自動更新" -ForegroundColor:Yellow;
     if (!$Force) {
-        $response = Read-Host " 沒有異議，請輸入Y (Y/N) ";
+        $response = Read-Host " 沒有異議, 請輸入Y (Y/N) ";
         if ($response -ne "Y" -or $response -ne "Y") { Write-Host "使用者中斷" -ForegroundColor:Red; return; }
     }
     
@@ -66,10 +66,18 @@ function DisableVideoDriverUpdate {
     }
     
     # 導向說明網站
-    # $env:Path = $env:Path+";C:\Program Files (x86)\Microsoft\Edge\Application"
-    # msedge.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
+    Write-Host "關於注意事項, 3秒後導向作者說明網站..."; Start-Sleep 3
+    explorer.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
 } # DisableVideoDriverUpdate -Filter:"VMware"
 
+
+
+# 簡化禁用代碼
 function DisAMD {
     DisableVideoDriverUpdate -Filter:Radeon
+} # DisAMD
+
+# 簡化復原代碼
+function RcvAMD {
+    DisableVideoDriverUpdate -Recovery
 } # DisAMD
