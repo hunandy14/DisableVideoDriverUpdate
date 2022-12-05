@@ -67,7 +67,7 @@ function DisableVideoDriverUpdate {
     }
     
     # 導向說明網站
-    Write-Host "關於注意事項, 3秒後導向作者說明網站..."; Start-Sleep 5
+    Write-Host "`n關於注意事項(很重要), 3秒後導向作者說明網站..." -ForegroundColor:Yellow; Start-Sleep 5
     explorer.exe "https://charlottehong.blogspot.com/2022/01/nvidia-or-amd.html"
 } # DisableVideoDriverUpdate -Filter:"VMware"
 
