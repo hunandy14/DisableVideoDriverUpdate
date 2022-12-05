@@ -3,27 +3,47 @@
 
 ![](img/run.png)
 
-## 禁用
+## 指令說明
 
 按下 Win+X 再按 A 打開終端機  
 
-```
+```ps1
 # 禁用顯示卡驅動自動更新
-irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate
+irm bit.ly/DisAMDUpdate|iex; DisableVideoDriverUpdate
 
 # 禁用AMD顯示卡驅動更新
-irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Filter:Radeon
-irm bit.ly/3fqFUMs|iex; DisAMD
+irm bit.ly/DisAMDUpdate|iex; DisAMD
+irm bit.ly/DisAMDUpdate|iex; DisableVideoDriverUpdate -Filter:Radeon
 
 # 恢復所有設備的自動更新
-irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Recovery
+irm bit.ly/DisAMDUpdate|iex; RcvAMD
+irm bit.ly/DisAMDUpdate|iex; DisableVideoDriverUpdate -Recovery
 
 # 查看設備
-irm bit.ly/3fqFUMs|iex; DisableVideoDriverUpdate -Info
+irm bit.ly/DisAMDUpdate|iex; DisableVideoDriverUpdate -Info
 ```
 
 修改完畢再去更新會跳錯，AMD的驅動就不會被更新了。  
 
+
+
+<br><br><br>
+
+## 捷徑代碼
+
+禁用
+```ps1
+powershell -nop -c "irm bit.ly/DisAMDUpdate|iex; DisAMD"
+```
+
+復原
+```ps1
+powershell -nop -c "irm bit.ly/DisAMDUpdate|iex; RcvAMD"
+```
+
+
+
+<br><br><br>
 
 ## 實際運作狀況
 大致的測試結果在這軟這邊會推送兩個版本的更新。  

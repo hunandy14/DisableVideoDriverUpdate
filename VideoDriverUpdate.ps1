@@ -80,4 +80,4 @@ function DisAMD {
 # 簡化復原代碼
 function RcvAMD {
     DisableVideoDriverUpdate -Recovery
-} # DisAMD
+} # RcvAMD
